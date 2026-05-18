@@ -1,0 +1,179 @@
+﻿\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{float}
+\usepackage{verbatim}
+
+% Configuration des Marges
+\geometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+
+% En-têtes et Pieds de page
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{StudyMate AI - Rapport de Projet}
+\fancyhead[R]{Tuteur IA Pédagogique}
+\fancyfoot[C]{\thepage}
+
+\titleformat{\chapter}[hang]{\normalfont\large\bfseries}{\thechapter.}{1em}{}
+
+\begin{document}
+
+% ─── PAGE DE GARDE ───────────────────────────────────────────
+\begin{titlepage}
+    \centering
+    \vspace*{1.5cm}
+    {\huge\bfseries Université Technologique}\\[0.5cm]
+    {\large Rapport de Projet de Fin d'Études}\\[1.5cm]
+    
+    \rule{\linewidth}{0.5mm}\\[0.4cm]
+    {\Huge \bfseries StudyMate AI}\\[0.2cm]
+    {\large \bfseries Tuteur Pédagogique Intelligent Fondé sur un Agent IA Autonome}\\[0.4cm]
+    \rule{\linewidth}{0.5mm}\\[1.5cm]
+    
+    \noindent
+    \begin{minipage}[t]{0.45\linewidth}
+        \textbf{Rédigé par :}\\
+        Étudiant en Intelligence Artificielle
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.45\linewidth}
+        \textbf{Supervisé par :}\\
+        Comité Pédagogique d'Évaluation
+    \end{minipage}\\[3cm]
+    
+    {\large \today}
+    \vfill
+\end{titlepage}
+
+% ─── TABLE DES MATIÈRES ──────────────────────────────────────
+\tableofcontents
+\newpage
+
+% ─── RÉSUMÉ ───────────────────────────────────────────────────
+\chapter*{Résumé}
+\addcontentsline{toc}{chapter}{Résumé}
+StudyMate AI est un assistant pédagogique destiné à faciliter la révision des étudiants. Il transforme des documents PDF en ressources de travail structurées : résumés, quiz, flashcards et planning de révision.
+
+Le projet se concentre sur l'essentiel : rendre les cours plus accessibles et organiser l'apprentissage sans complexité technique.
+\newpage
+
+% ─── 1. INTRODUCTION ─────────────────────────────────────────
+\chapter{Introduction}
+StudyMate AI vise à aider les étudiants à mieux réviser en automatisant la transformation des supports de cours.
+
+L'application propose une interface simple et des services concrets pour réduire le temps passé à préparer les révisions et augmenter l'efficacité de l'étude.
+
+% ─── 2. PROBLÉMATIQUE ────────────────────────────────────────
+\chapter{Problématique}
+Les étudiants doivent souvent assimiler des documents volumineux sans outil adapté. Ils manquent de temps pour :
+\begin{itemize}
+    \item synthétiser le cours,
+    \item s'auto-évaluer,
+    \item planifier leurs sessions de révision.
+\end{itemize}
+
+Une application qui concentre ces fonctions peut améliorer la qualité des révisions.
+
+% ─── 3. OBJECTIFS DU PROJET ──────────────────────────────────
+\chapter{Objectifs du projet}
+Les objectifs principaux de StudyMate AI sont :
+\begin{itemize}
+    \item extraire le contenu des PDF,
+    \item générer des résumés pédagogiques,
+    \item proposer des quiz et des flashcards,
+    \item construire un planning de révision simple.
+\end{itemize}
+
+Le but est de fournir une aide pratique sans surcharge.
+
+% ─── 4. ARCHITECTURE ET FONCTIONNEMENT ───────────────────────
+\chapter{Architecture et fonctionnement}
+Le système combine une interface web, un agent IA et des modules spécialisés.
+
+\section{Interface utilisateur}
+L'interface Gradio permet de charger un PDF, puis d'accéder aux fonctions de résumé, quiz, flashcards et planning.
+
+\section{Agent IA}
+L'agent pilote les actions et utilise des prompts pour guider la génération du contenu.
+
+\section{Modules métiers}
+Les modules du projet sont :
+\begin{itemize}
+    \item le lecteur PDF,
+    \item le générateur de quiz,
+    \item le générateur de flashcards,
+    \item le planificateur de révision.
+\end{itemize}
+
+% ─── 5. TECHNOLOGIES UTILISÉES ───────────────────────────────
+\chapter{Technologies utilisées}
+Le projet repose sur :
+\begin{itemize}
+    \item Python,
+    \item Gradio,
+    \item LangChain,
+    \item l'API Gemini,
+    \item PyMuPDF.
+\end{itemize}
+
+Ces choix simplifient le développement tout en offrant des fonctionnalités robustes.
+
+% ─── 6. DESCRIPTION DES OUTILS ───────────────────────────────
+\chapter{Description des outils}
+Chaque outil apporte une fonctionnalité clé.
+
+\section{PDF Reader}
+Il extrait le texte des fichiers PDF pour le rendre exploitable.
+
+\section{Quiz Generator}
+Il génère des questions à choix multiples liées au contenu du cours.
+
+\section{Flashcard Generator}
+Il crée des cartes de révision courtes pour mémoriser les notions essentielles.
+
+\section{Planner Tool}
+Il construit un planning adapté à la durée de révision disponible.
+
+% ─── 7. INTERFACE UTILISATEUR ────────────────────────────────
+\chapter{Interface utilisateur}
+L'interface est épurée pour permettre un usage rapide. Les étudiants peuvent lancer les actions principales en quelques clics.
+
+La navigation se fait par onglets et chaque résultat est présenté de manière lisible.
+
+% ─── 8. RÉSULTATS ET OBSERVATIONS ────────────────────────────
+\chapter{Résultats et observations}
+StudyMate AI permet de produire des ressources utiles pour la révision :
+\begin{itemize}
+    \item résumés synthétiques,
+    \item quiz de vérification,
+    \item flashcards pour la mémorisation,
+    \item planning simple.
+\end{itemize}
+
+Ces résultats montrent que l'outil répond aux besoins essentiels sans complexité inutile.
+
+% ─── 9. LIMITES ET AMÉLIORATIONS ────────────────────────────
+\chapter{Limites et améliorations}
+Les limites principales sont :
+\begin{itemize}
+    \item dépendance à l'API externe,
+    \item qualité variable selon le format du PDF,
+    \item extraction difficile pour des documents mal structurés.
+\end{itemize}
+
+Des améliorations futures peuvent porter sur le stockage des sessions et la gestion des PDF volumineux.
+
+% ─── 10. CONCLUSION ─────────────────────────────────────────
+\chapter{Conclusion}
+StudyMate AI offre une solution simple pour aider les étudiants à réviser. Il transforme des supports PDF en ressources structurées et facilite l'organisation de la révision.
+
+La conception modulaire du projet permet d'ajouter facilement de nouvelles fonctions à l'avenir.
+
+\end{document}
