@@ -24,7 +24,7 @@ studymate-ai/
 ├── reports/            ← Exports générés (résumés, quiz...)
 │
 ├── requirements.txt    ← Dépendances Python
-├── .env.example        ← Template configuration API
+├── .env                ← Template configuration API
 └── README.md           ← Ce fichier
 ```
 
