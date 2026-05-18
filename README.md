@@ -34,7 +34,7 @@ studymate-ai/
 
 ### 1. Cloner le projet
 ```bash
-git clone <votre-repo>
+git clone https://github.com/achref891/studymate-ai
 cd studymate-ai
 ```
 
