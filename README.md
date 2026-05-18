@@ -51,10 +51,9 @@ pip install -r requirements.txt
 ```
 
 ### 4. Configurer la clé API
-```bash
-cp .env.example .env
-# Éditez .env et ajoutez votre GOOGLE_API_KEY
-```
+
+Éditez .env et ajoutez votre GOOGLE_API_KEY
+
 
 Obtenez une clé gratuite sur : https://aistudio.google.com/
 
