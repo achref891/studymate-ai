@@ -305,7 +305,7 @@ with gr.Blocks(
 
     gr.Markdown("""
     ---
-    **StudyMate AI** | LangChain + Gemini | Tools: PDF Reader · Quiz Generator · Flashcard Generator · Study Planner
+    **StudyMate AI** | LangChain + Groq | Tools: PDF Reader · Quiz Generator · Flashcard Generator · Study Planner
     """)
 
 
@@ -321,7 +321,7 @@ if __name__ == "__main__":
 +--------------------------------------+
 |  Tools   : 4 (PDF, Quiz, FC, Plan)   |
 |  Agent   : LangChain ReAct           |
-|  LLM     : Gemini 1.5 Flash          |
+|  LLM     : Groq Llama 3.3            |
 |  Frontend: Gradio                    |
 +--------------------------------------+
 

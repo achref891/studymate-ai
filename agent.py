@@ -6,7 +6,7 @@ Orchestre les 4 tools pour analyser un cours et produire tous les livrables.
 
 import os
 from dotenv import load_dotenv
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 from langchain_classic.agents import AgentExecutor, create_react_agent
 from langchain_core.prompts import PromptTemplate
 from langchain_classic.memory import ConversationBufferWindowMemory
@@ -70,20 +70,19 @@ class StudyMateAgent:
     """
 
     def __init__(self):
-        api_key = os.getenv("GOOGLE_API_KEY")
+        api_key = os.getenv("GROQ_API_KEY")
         if not api_key:
             raise ValueError(
-                "❌ GOOGLE_API_KEY manquante !\n"
-                "1. Copiez .env.example en .env\n"
-                "2. Ajoutez votre clé API Gemini"
+                "❌ GROQ_API_KEY manquante !\n"
+                "Ajoutez votre clé API Groq dans votre fichier .env"
             )
 
-        # LLM Gemini (gratuit pour étudiants)
-        self.llm = ChatGoogleGenerativeAI(
-            model="gemini-flash-latest",
-            google_api_key=api_key,
-            temperature=0.3,         # Précision > créativité pour le contenu pédagogique
-            max_output_tokens=4096,
+        # LLM Groq (ex: Llama-3.3-70b)
+        self.llm = ChatGroq(
+            model="llama-3.3-70b-versatile",
+            groq_api_key=api_key,
+            temperature=0.3,
+            max_tokens=4096,
         )
 
         # Mémoire de conversation (fenêtre de 5 échanges)
@@ -234,53 +233,42 @@ Sois précis, pédagogique et complet."""
     def chat(self, user_message: str) -> str:
         """
         Chat interactif avec contexte du cours.
-        L'agent raisonne en plusieurs étapes si nécessaire.
+        Appelle le LLM directement avec l'historique et le contexte du cours
+        pour éviter les erreurs de parsing/limites d'itérations de l'agent ReAct.
         """
+        # Charger l'historique de conversation depuis la mémoire
+        memory_vars = self.memory.load_memory_variables({})
+        chat_history = memory_vars.get("chat_history", [])
+
+        # Construire les messages de la conversation
+        messages = []
+
         if not self.course_text:
-            # Sans PDF, répondre en mode général
-            response = self.llm.invoke([
-                SystemMessage(content="Tu es StudyMate AI, assistant pédagogique. Réponds en français."),
-                HumanMessage(content=user_message)
-            ])
-            content = response.content if hasattr(response, "content") else response
-            if isinstance(content, list):
-                raw_text = ""
-                for block in content:
-                    if isinstance(block, str):
-                        raw_text += block
-                    elif isinstance(block, dict) and "text" in block:
-                        raw_text += block["text"]
-                    elif hasattr(block, "text"):
-                        raw_text += block.text
-                    elif hasattr(block, "get") and block.get("text"):
-                        raw_text += block.get("text")
-                    else:
-                        raw_text += str(block)
-            else:
-                raw_text = str(content)
-            return raw_text
-
-        # Avec PDF : répondre avec contexte du cours
-        contextualized_prompt = f"""Tu es StudyMate AI. L'étudiant a chargé le cours : "{self.course_filename}"
-
-CONTENU DU COURS (contexte) :
-{self.course_text[:6000]}
-
-QUESTION DE L'ÉTUDIANT :
-{user_message}
-
-Réponds de manière précise en t'appuyant sur le cours. 
+            # Mode général (sans cours chargé)
+            messages.append(SystemMessage(content="Tu es StudyMate AI, assistant pédagogique. Réponds en français."))
+        else:
+            # Mode contextuel (avec cours chargé)
+            messages.append(SystemMessage(content=f"""Tu es StudyMate AI, un assistant pédagogique intelligent pour étudiants universitaires.
+Tu aides l'étudiant à comprendre son cours. Réponds de manière précise en t'appuyant sur le cours.
 Si la question dépasse le cours, indique-le clairement.
-Sois pédagogique et utilise des exemples concrets."""
+Sois pédagogique et utilise des exemples concrets. Réponds en français (sauf si l'étudiant écrit en anglais).
+
+Nom du cours : {self.course_filename}
+Contenu du cours (contexte) :
+{self.course_text[:8000]}"""))
+
+        # Ajouter l'historique des échanges
+        messages.extend(chat_history)
+        
+        # Ajouter la question actuelle de l'étudiant
+        messages.append(HumanMessage(content=user_message))
 
         try:
-            # Tenter avec l'agent ReAct (raisonnement multi-étapes)
-            result = self.executor.invoke({"input": contextualized_prompt})
-            return result.get("output", "Désolé, je n'ai pas pu traiter votre demande.")
-        except Exception:
-            # Fallback : appel direct au LLM
-            response = self.llm.invoke(contextualized_prompt)
+            # Appel direct au LLM
+            response = self.llm.invoke(messages)
             content = response.content if hasattr(response, "content") else response
+            
+            # Traiter le format de réponse
             if isinstance(content, list):
                 raw_text = ""
                 for block in content:
@@ -296,7 +284,16 @@ Sois pédagogique et utilise des exemples concrets."""
                         raw_text += str(block)
             else:
                 raw_text = str(content)
+            
+            # Enregistrer l'échange dans la mémoire pour les prochains tours de chat
+            self.memory.save_context(
+                {"input": user_message},
+                {"output": raw_text}
+            )
             return raw_text
+
+        except Exception as e:
+            return f"Désolé, une erreur est survenue lors du traitement de votre message : {str(e)}"
 
     # ─── ANALYSE COMPLÈTE AUTOMATIQUE ────────
 
